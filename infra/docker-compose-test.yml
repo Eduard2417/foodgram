@@ -12,14 +12,14 @@ services:
     volumes:
       - db:/var/lib/postgresql/data/
     env_file:
-      - ./.env
+      - ../.env
   backend:
     image: eduard2417/foodgram_backend
     volumes:
       - media:/app/media
       - static:/app/collected_static
     env_file:
-      - ./.env
+      - ../.env
     depends_on:
       - db
   frontend:
