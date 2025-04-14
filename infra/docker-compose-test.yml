@@ -14,7 +14,7 @@ services:
     env_file:
       - ../.env
   backend:
-    image: eduard2417/foodgram_backend
+    build: ../backend
     volumes:
       - media:/app/media
       - static:/app/collected_static
@@ -24,7 +24,7 @@ services:
       - db
   frontend:
     container_name: foodgram-front
-    image: eduard2417/foodgram_frontend
+    build: ../frontend
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:

@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from .models import (Favorite, Ingredient, Recipe, RecipeIngredients,
                      RecipeTags, ShoppingCart, Tag)
@@ -21,7 +22,8 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'author', 'name', 'favorites')
+    list_display = ('id', 'author', 'name',
+                    'favorites', 'display_ingredients', 'display_image')
     list_editable = ('author', 'name')
     search_fields = ('author__username', 'name')
     list_filter = ('tags',)
@@ -29,6 +31,20 @@ class RecipeAdmin(admin.ModelAdmin):
     @admin.display(description='Избранное')
     def favorites(self, obj):
         return obj.favorite_recipe.count()
+
+    @admin.display(description='Связанные ингредиенты')
+    def display_ingredients(self, obj):
+        return ', '.join(
+            [ingredient.ingredient.name
+             for ingredient in obj.recipe_ingredients.all()]
+        )
+
+    @admin.display(description='Изображение рецепта')
+    def display_image(self, obj):
+        if obj.image:
+            return mark_safe(
+                f'<img src="{obj.image.url}" width="100" height="100">')
+        return None
 
 
 @admin.register(RecipeIngredients)

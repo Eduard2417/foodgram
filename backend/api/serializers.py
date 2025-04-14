@@ -9,7 +9,6 @@ from rest_framework import serializers
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredients,
                             ShoppingCart, Tag)
 from users.models import Subscribe, User
-
 from .constants import DOMAIN_URL
 
 
@@ -124,7 +123,7 @@ class ReadRecipeSerializer(serializers.ModelSerializer):
     image = GetImageBase64()
     author = UserReadSerializer()
     ingredients = RecipeIngredientSerializer(
-        source='recipe_ingredienys', many=True)
+        source='recipe_ingredients', many=True)
     tags = TagSerializer(many=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
@@ -254,3 +253,20 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         return get_subscriptions(obj, self.context)
+
+
+class SubscribeCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Subscribe
+        fields = ('user', 'author')
+
+    def create(self, validated_data):
+
+        subscribe = Subscribe.objects.create(**validated_data)
+        return subscribe
+
+    def to_representation(self, instance):
+        serializer = SubscribeSerializer(instance.author, context=self.context)
+        return serializer.data
+

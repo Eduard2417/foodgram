@@ -2,6 +2,7 @@ from rest_framework import permissions
 
 
 class IsAuthorOrReadOnly(permissions.BasePermission):
+    '''Класс для создания уровня - только для автора или только просмотр'''
 
     def has_permission(self, request, view):
         return (request.user.is_authenticated

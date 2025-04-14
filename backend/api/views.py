@@ -10,7 +10,6 @@ from rest_framework.response import Response
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredients,
                             ShoppingCart, Tag)
 from users.models import Subscribe, User
-
 from .constants import RECIPE_URL
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPaginator
@@ -19,7 +18,8 @@ from .serializers import (CreateRecipeSerializer, CustomUserCreateSerializer,
                           IngredientSerializer, ReadRecipeSerializer,
                           RecipeSerializer, SetPasswordSerializer,
                           SetUserAvatarSerializer, SubscribeSerializer,
-                          TagSerializer, UserReadSerializer)
+                          TagSerializer, UserReadSerializer,
+                          SubscribeCreateSerializer)
 
 
 def manage_list_item(request, recipe, user,
@@ -169,11 +169,12 @@ class UserViewSet(viewsets.ModelViewSet):
                     {'detail': 'Вы уже подписанны на данного пользователя'},
                     status=status.HTTP_400_BAD_REQUEST)
 
-            serializer = SubscribeSerializer(author, data=request.data,
-                                             context={'request': request})
+            serializer = SubscribeCreateSerializer(
+                data={'user': user.id, 'author': author.id},
+                context={'request': request})
 
             if serializer.is_valid(raise_exception=True):
-                Subscribe.objects.create(user=user, author=author)
+                serializer.save()
                 return Response(serializer.data,
                                 status=status.HTTP_201_CREATED)
 
