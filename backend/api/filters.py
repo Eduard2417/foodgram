@@ -5,6 +5,11 @@ from recipes.models import Ingredient, Recipe, Tag
 
 
 class IngredientFilter(FilterSet):
+    '''
+    Фильтр для представления ингредиентов
+    по имени рецепта
+    '''
+
     name = rest_framework.CharFilter(lookup_expr='istartswith')
 
     class Meta:
@@ -13,6 +18,11 @@ class IngredientFilter(FilterSet):
 
 
 class RecipeFilter(FilterSet):
+    '''
+    Фильтр для представления рецептов по тегам,
+    авторам, наличию в списке покупок или избранном
+    '''
+
     tags = filters.ModelMultipleChoiceFilter(queryset=Tag.objects.all(),
                                              field_name='tags__slug',
                                              to_field_name='slug')

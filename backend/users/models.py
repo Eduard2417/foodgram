@@ -5,6 +5,8 @@ from .constants import MAX_EMAIL_VALUE
 
 
 class User(AbstractUser):
+    '''Модель для представления пользователя'''
+
     email = models.EmailField('электронная почта', max_length=MAX_EMAIL_VALUE)
     avatar = models.ImageField('аватар', upload_to='users_avatars', blank=True)
 
@@ -18,6 +20,8 @@ class User(AbstractUser):
 
 
 class Subscribe(models.Model):
+    '''Модель для представления подписок'''
+
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              verbose_name='подписчик',
                              related_name='subscriber')

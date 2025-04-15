@@ -5,7 +5,9 @@ from .models import Subscribe, User
 
 
 @admin.register(User)
-class UserAdmin(UserAdmin):
+class MyUserAdmin(UserAdmin):
+    '''Админский интерфейс для модели пользователя'''
+
     list_display = (
         'id', 'username', 'email', 'first_name', 'last_name'
     )
@@ -17,6 +19,8 @@ class UserAdmin(UserAdmin):
 
 @admin.register(Subscribe)
 class SubscribeAdmin(admin.ModelAdmin):
+    '''Админский интерфейс для модели подписок'''
+
     list_display = (
         'id', 'user', 'author'
     )
