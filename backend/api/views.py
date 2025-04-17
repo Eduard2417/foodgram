@@ -1,5 +1,5 @@
 from django.db.models import Sum
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
@@ -74,8 +74,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if end_url == 'edit':
             instance = self.get_object()
             if instance.author != request.user:
-                redirect_url = '/'.join(url[:-2])
-                return HttpResponseRedirect(redirect_url)
+                return Response({'detail': 'Forbidden'},
+                                status=status.HTTP_403_FORBIDDEN)
         return super().retrieve(request, *args, **kwargs)
 
     def get_serializer_class(self):
@@ -110,7 +110,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(methods=['GET'], detail=True, url_path='get-link')
     def get_link(self, request, **kwargs):
         '''Метод для получения ссылки на страницу рецепта'''
-        return Response({'short-link': request.path})
+        url = request.META.get('HTTP_REFERER')
+        return Response({'short-link': url})
 
     @action(methods=['GET'], detail=False,
             permission_classes=(IsAuthenticated,))

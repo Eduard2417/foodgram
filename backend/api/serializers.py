@@ -132,6 +132,11 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         model = RecipeIngredients
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
+    def validate(self, attrs):
+        if attrs['amount'] == 0:
+            raise serializers.ValidationError('ну не')
+        return super().validate(attrs)
+
 
 class ReadRecipeSerializer(serializers.ModelSerializer):
     '''Сериализатор для чтения рецепта'''
@@ -177,6 +182,11 @@ class CreateIngredientToRecipe(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredients
         fields = ('id', 'amount')
+
+    def validate(self, attrs):
+        if attrs['amount'] == 0:
+            raise serializers.ValidationError('ну не')
+        return super().validate(attrs)
 
 
 class CreateRecipeSerializer(serializers.ModelSerializer):

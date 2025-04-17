@@ -135,5 +135,7 @@ DJOSER = {
     'LOGIN_FIELD': 'email'
 }
 
+AUTHENTICATION_BACKENDS = (
+    'foodgram.authentication.EmailBackend',
+)
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_HEADERS = '*'.split()

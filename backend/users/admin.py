@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group
 from rest_framework.authtoken.admin import TokenProxy
 
 from .models import Subscribe, User
+from .forms import AdminAuthenticationForm
 
 
 @admin.register(User)
@@ -33,3 +34,4 @@ class SubscribeAdmin(admin.ModelAdmin):
 
 admin.site.unregister(Group)
 admin.site.unregister(TokenProxy)
+admin.site.login_form = AdminAuthenticationForm
