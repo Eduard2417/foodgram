@@ -12,19 +12,19 @@ services:
     volumes:
       - db:/var/lib/postgresql/data/
     env_file:
-      - ./.env
+      - ../.env
   backend:
-    image: eduard2417/foodgram_backend
+    build: ../backend
     volumes:
       - media:/app/media
       - static:/app/collected_static
     env_file:
-      - ./.env
+      - ../.env
     depends_on:
       - db
   frontend:
     container_name: foodgram-front
-    image: eduard2417/foodgram_frontend
+    build: ../frontend
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
@@ -38,9 +38,5 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
-      - ./https/fullchain.pem:/etc/nginx/ssl/fullchain.pem
-      - ./https/options-ssl-nginx.conf:/etc/nginx/ssl/options-ssl-nginx.conf
-      - ./https/privkey.pem:/etc/nginx/ssl/privkey.pem
-      - ./https/ssl-dhparams.pem:/etc/nginx/ssl/ssl-dhparams.pem
       - media:/media
       - static:/static

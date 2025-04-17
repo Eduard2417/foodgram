@@ -1,18 +1,17 @@
 from django.db.models import Sum
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredients,
+                            ShoppingCart, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredients,
-                            ShoppingCart, Tag)
 from users.models import Subscribe, User
 
 from .filters import IngredientFilter, RecipeFilter
-from .pagination import CustomPaginator
+from .pagination import SixPagesPaginator
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (CreateRecipeSerializer, CustomUserCreateSerializer,
                           IngredientSerializer, ReadRecipeSerializer,
@@ -65,9 +64,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     queryset = Recipe.objects.all()
     permission_classes = (IsAuthorOrReadOnly,)
-    pagination_class = CustomPaginator
+    pagination_class = SixPagesPaginator
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
+
+    def retrieve(self, request, *args, **kwargs):
+        url = request.META.get('HTTP_REFERER').strip('/').split('/')
+        end_url = url[-1]
+        if end_url == 'edit':
+            instance = self.get_object()
+            if instance.author != request.user:
+                redirect_url = '/'.join(url[:-2])
+                return HttpResponseRedirect(redirect_url)
+        return super().retrieve(request, *args, **kwargs)
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
@@ -101,9 +110,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(methods=['GET'], detail=True, url_path='get-link')
     def get_link(self, request, **kwargs):
         '''Метод для получения ссылки на страницу рецепта'''
-
-        url = request.META.get('HTTP_REFERER', '')
-        return Response({'short-link': url})
+        return Response({'short-link': request.path})
 
     @action(methods=['GET'], detail=False,
             permission_classes=(IsAuthenticated,))
@@ -124,7 +131,7 @@ class UserViewSet(viewsets.ModelViewSet):
     '''Представление для пользователей'''
 
     queryset = User.objects.all()
-    pagination_class = CustomPaginator
+    pagination_class = SixPagesPaginator
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
@@ -197,7 +204,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'], detail=False,
             permission_classes=(IsAuthenticated,),
-            pagination_class=CustomPaginator)
+            pagination_class=SixPagesPaginator)
     def subscriptions(self, request):
         '''Метод для получения списка подписок'''
 

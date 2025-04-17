@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
+from .forms import RecipeForm
 from .models import (Favorite, Ingredient, Recipe, RecipeIngredients,
                      RecipeTags, ShoppingCart, Tag)
 
@@ -24,15 +25,23 @@ class IngredientAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 
+class RecipeIngredientsInline(admin.TabularInline):
+    model = RecipeIngredients
+    extra = 1
+    min_num = 1
+
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     '''Админский интерфейс для модели рецептов'''
 
+    form = RecipeForm
     list_display = ('id', 'author', 'name',
                     'favorites', 'display_ingredients', 'display_image')
     list_editable = ('author', 'name')
     search_fields = ('author__username', 'name')
     list_filter = ('tags',)
+    inlines = (RecipeIngredientsInline,)
 
     @admin.display(description='Избранное')
     def favorites(self, obj):

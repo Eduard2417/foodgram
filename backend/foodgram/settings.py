@@ -23,14 +23,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig',
-    'api.apps.ApiConfig',
     'recipes.apps.RecipesConfig',
     'rest_framework',
+    'django_filters',
+    'corsheaders',
     'rest_framework.authtoken',
     'djoser',
-    'django_filters',
-    'corsheaders'
+    'users.apps.UsersConfig',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -125,6 +125,11 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+
+'''AUTHENTICATION_BACKENDS = (
+    'foodgram.authentication.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend'
+)'''
 
 DJOSER = {
     'LOGIN_FIELD': 'email'

@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import Group
+from rest_framework.authtoken.admin import TokenProxy
 
 from .models import Subscribe, User
 
@@ -27,3 +29,7 @@ class SubscribeAdmin(admin.ModelAdmin):
     list_editable = (
         'user', 'author',
     )
+
+
+admin.site.unregister(Group)
+admin.site.unregister(TokenProxy)
