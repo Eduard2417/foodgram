@@ -2,14 +2,12 @@ from django.db.models import Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredients,
-                            ShoppingCart, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from users.models import Subscribe, User
 
+from users.models import Subscribe, User
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import SixPagesPaginator
 from .permissions import IsAuthorOrReadOnly
@@ -19,6 +17,8 @@ from .serializers import (CreateRecipeSerializer, CustomUserCreateSerializer,
                           SetUserAvatarSerializer, SubscribeCreateSerializer,
                           SubscribeSerializer, TagSerializer,
                           UserReadSerializer)
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredients,
+                            ShoppingCart, Tag)
 from .utilities import create_shopping_cart_txt
 
 
